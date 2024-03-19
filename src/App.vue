@@ -1,17 +1,15 @@
 <template>
     <div class ="app">
-        <post-form/>
-        <post-list/>
+        <PostForm @create="createPost"/>
+        <PostList :posts="posts"/>
     </div>
 </template>
 
 <script>
-import PostForm from "@/components/PostForm";
-import PostList from "@/components/PostList";
-
+import PostForm from '/src/components/PostForm.vue';
+import PostList from '/src/components/PostList.vue';
     export default {
-        components:
-        {
+        components:{
             PostForm, 
             PostList
         },
@@ -33,24 +31,15 @@ import PostList from "@/components/PostList";
                         title: 'Post 3',
                         body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, ipsa voluptatibus itaque consequuntur quos possimus accusantium reprehenderit repellendus ipsam sint cupiditate, consectetur dolor in blanditiis deleniti ducimus rem nostrum soluta.'
                     },
-                ],
-                title: '',
-                body: ''
+                ]
             }
         },
         methods: {
-            CreatePost()
+            createPost(post)
             {
-                const newPost = {
-                    id: Date.now(),
-                    title: this.title,
-                    body: this.body,
-                }
-                this.posts.push(newPost);
-
-                this.title = '';
-                this.body = '';
-            },
+                // console.log(post);
+                this.posts.push(post);
+            }
         },
     }
 </script>
