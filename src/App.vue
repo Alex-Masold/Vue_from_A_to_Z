@@ -54,6 +54,10 @@ import PostList from '/src/components/PostList.vue';
             },
             removePost(post){
                 this.posts = this.posts.filter(p => p.id !== post.id)
+            },
+            showDialog()
+            {
+                this.dialogVisible = true;
             }
         },
     }
