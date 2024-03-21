@@ -1,9 +1,5 @@
 <template>
     <div class ="app">
-<<<<<<< Updated upstream
-        <PostForm @create="createPost"/>
-        <PostList 
-=======
         <custom-button
         @click="showDialog">
             Создать пост
@@ -13,7 +9,6 @@
             @create="createPost"/>
         </custom-dialog>
         <post-list 
->>>>>>> Stashed changes
         :posts="posts"
         @remove="removePost"/>
     </div>
