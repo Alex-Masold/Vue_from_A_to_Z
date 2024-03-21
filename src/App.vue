@@ -1,7 +1,19 @@
 <template>
     <div class ="app">
+<<<<<<< Updated upstream
         <PostForm @create="createPost"/>
         <PostList 
+=======
+        <custom-button
+        @click="showDialog">
+            Создать пост
+        </custom-button>
+        <custom-dialog v-model:show="dialogVisible">
+            <post-form
+            @create="createPost"/>
+        </custom-dialog>
+        <post-list 
+>>>>>>> Stashed changes
         :posts="posts"
         @remove="removePost"/>
     </div>
@@ -17,6 +29,8 @@ import PostList from '/src/components/PostList.vue';
         },
         data() {
             return {
+                dialogVisible: false,
+
                 posts: [
                     {
                         id: 1, 
@@ -41,6 +55,7 @@ import PostList from '/src/components/PostList.vue';
             {
                 // console.log(post);
                 this.posts.push(post);
+                this.dialogVisible = false;
             },
             removePost(post){
                 this.posts = this.posts.filter(p => p.id !== post.id)

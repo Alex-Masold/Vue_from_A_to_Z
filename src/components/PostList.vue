@@ -1,6 +1,6 @@
 <template>
     <h3>
-            <strong>Список постов</strong>
+        <strong>Список постов</strong>
     </h3>
     <div v-if="posts.length > 0">
        
