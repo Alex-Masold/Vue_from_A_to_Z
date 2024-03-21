@@ -1,19 +1,28 @@
 <template>
     <div class ="app">
-        <PostForm @create="createPost"/>
-        <PostList 
+        <custom-button
+        @click="showDialog">
+            Создать пост
+        </custom-button>
+        <custom-dialog v-model:show="dialogVisible">
+            <post-form 
+            @create="createPost"/>
+        </custom-dialog>
+        <post-list 
         :posts="posts"
         @remove="removePost"/>
     </div>
 </template>
 
 <script>
-import PostForm from '/src/components/PostForm.vue';
-import PostList from '/src/components/PostList.vue';
+import PostForm from './components/PostForm.vue';
+import PostList from './components/PostList.vue';
+import PostSerch from './components/PostSerch.vue';
     export default {
         components:{
-            PostForm, 
-            PostList
+            PostSerch,
+            PostList,
+            PostForm,
         },
         data() {
             return {
@@ -36,6 +45,7 @@ import PostList from '/src/components/PostList.vue';
                 ]
             }
         },
+        dialogVisible: false,
         methods: {
             createPost(post)
             {
@@ -44,6 +54,9 @@ import PostList from '/src/components/PostList.vue';
             },
             removePost(post){
                 this.posts = this.posts.filter(p => p.id !== post.id)
+            },
+            showDialog(){
+                this.dialogVisible = true;
             }
         },
     }
@@ -58,5 +71,4 @@ import PostList from '/src/components/PostList.vue';
     .app{
         padding: 20px;
     }
-    
 </style>

@@ -1,24 +1,24 @@
 <template>
     <form @submit.prevent>
         <h4>Создание Поста</h4>
-        <CustomInput        
+        <custom-input        
             v-model="post.title"
             class="input" 
             type="text" 
             placeholder="Название"
         />
-        <CustomInput 
+        <custom-input 
             v-model="post.body"
             class="input" 
             type="text" 
             placeholder="Описание"
         />
-        <CustomButton  
+        <custom-button  
             class="createButton"
             @click="createPost"
             >
             Создать
-        </CustomButton>
+        </custom-button>
     </form>
 </template>
 
@@ -26,7 +26,8 @@
 export default{
     data() {
         return {
-            post:{
+ 
+        post:{
                 title: '',
                 body: '',
             }
