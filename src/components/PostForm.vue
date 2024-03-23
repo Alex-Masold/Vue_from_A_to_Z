@@ -1,24 +1,24 @@
 <template>
-    <form @submit.prevent>
+    <form class="form" @submit.prevent>
         <h4>Создание Поста</h4>
-        <CustomInput        
+        <custom-input        
             v-model="post.title"
             class="input" 
             type="text" 
             placeholder="Название"
         />
-        <CustomInput 
+        <custom-input 
             v-model="post.body"
             class="input" 
             type="text" 
             placeholder="Описание"
         />
-        <CustomButton  
+        <custom-button  
             class="createButton"
             @click="createPost"
             >
             Создать
-        </CustomButton>
+        </custom-button>
     </form>
 </template>
 
@@ -34,22 +34,22 @@ export default{
     },
     methods: {
         createPost()
-            {
-                this.post.id = Date.now();
-                this.$emit('create', this.post)
+        {
+            this.post.id = Date.now();
+            this.$emit('create', this.post)
 
-                this.post = {
-                    title: '',
-                    body: ''
-                }
+            this.post = {
+                title: '',
+                body: ''
+            }
 
-            },
+        },
     },
 }
 </script>
     
 <style scoped>
-    form {
+    .form {
         display: flex;
         flex-direction: column;
     }

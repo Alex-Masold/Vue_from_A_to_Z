@@ -1,17 +1,17 @@
 <template>
-    <button>
+    <button class="button">
         <slot></slot>
     </button>
 </template>
 
 <script>
 export default {
-    name: 'CustomButton'
+    name: 'custom-button'
 }
 </script>
 
 <style scoped>
-    button {
+    .button {
         align-self: flex-end;
 
         border: 2px solid teal;

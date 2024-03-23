@@ -11,9 +11,9 @@
             </div>
         </div>
         <div class="postButtons">
-            <CustomButton
+            <custom-button
             @click="$emit('remove', post)">
-            Удалить</CustomButton>
+            Удалить</custom-button>
         </div>
         
     </div>
@@ -36,6 +36,7 @@
         align-items: center;
         justify-content: space-between;
         
+        gap: 0.5em;
         padding: 0.5em;
         border: 3px solid teal;
         margin-top: 15px;

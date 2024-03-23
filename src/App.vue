@@ -1,47 +1,55 @@
 <template>
     <div class ="app">
-        <custom-button
-        @click="showDialog">
-            Создать пост
-        </custom-button>
+        <h2>Страница постов</h2>
+        <div class="block">
+            <custom-button
+            @click="showDialog">
+                Создать пост
+            </custom-button>
+            <custom-select 
+            v-model="selectedSort"
+            :options="sortOptions"/>
+        </div>
         <custom-dialog v-model:show="dialogVisible">
             <post-form
             @create="createPost"/>
         </custom-dialog>
         <post-list 
-        :posts="posts"
+        :posts="sortedPosts"
+        v-if="!isPostsLoading"
         @remove="removePost"/>
+        <div v-else>
+            <h3>
+                <strong>Список постов</strong>
+            </h3>
+            <v-progress-linear color="teal" indeterminate></v-progress-linear>
+        </div>
     </div>
 </template>
 
 <script>
 import PostForm from '/src/components/PostForm.vue';
 import PostList from '/src/components/PostList.vue';
+import axios from 'axios'
+
     export default {
         components:{
             PostForm, 
-            PostList
+            PostList,
         },
         data() {
             return {
                 dialogVisible: false,
+                isPostsLoading: false,
 
-                posts: [
-                    {
-                        id: 1, 
-                        title: 'Post 1', 
-                        body: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsa autem ratione eius, aperiam necessitatibus sunt earum quas impedit. Nulla molestiae ipsam delectus facilis veritatis sit veniam atque ut a nostrum.'
-                    },
-                    {
-                        id: 2,
-                        title: 'Post 2',
-                        body: 'Doloribus dicta autem excepturi similique culpa natus non, quidem voluptatibus atque aspernatur voluptate incidunt magnam veniam nam nemo repellat accusamus nulla quis quasi fugiat. Eos odit nostrum molestiae illum porro?'
-                    },
-                    {
-                        id: 3,
-                        title: 'Post 3',
-                        body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, ipsa voluptatibus itaque consequuntur quos possimus accusantium reprehenderit repellendus ipsam sint cupiditate, consectetur dolor in blanditiis deleniti ducimus rem nostrum soluta.'
-                    },
+                selectedSort: '',
+
+                posts: [],
+                sortOptions:[
+                    {value: 'title', name: 'По названию'},
+                    {value: 'body', name: 'По описанию'},
+                    {value: 'id', name: 'По id'},
+
                 ]
             }
         },
@@ -58,8 +66,47 @@ import PostList from '/src/components/PostList.vue';
             showDialog()
             {
                 this.dialogVisible = true;
-            }
+            },
+            async fetchPosts() 
+            {
+                try {
+                    this.isPostsLoading = true;
+                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=5')
+                    this.posts = response.data;
+                }
+                catch (err) {
+                    alert('error')
+                }
+                finally{
+                    this.isPostsLoading = false;
+                }
+            },
         },
+        mounted(){
+            this.fetchPosts();
+        }, 
+        // watch:{
+        //     selectedSort(value)
+        //     {
+        //         this.posts.sort((post1, post2) => {
+        //             return post1[value]?.localeCompare(post2[value])
+        //         })
+        //     }
+        // },
+        computed:{
+            sortedPosts(){
+                if (this.selectedSort === 'id') //как отсортировать по id
+                {
+                    
+                }
+                else
+                {
+                    return[...this.posts].sort((post1, post2) => {
+                    return post1[this.selectedSort]?.localeCompare(post2[this.selectedSort])
+                    })
+                }
+            },   
+        }
     }
 </script>
 
@@ -72,5 +119,10 @@ import PostList from '/src/components/PostList.vue';
     .app{
         padding: 20px;
     }
-    
+    .block{
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5em;
+        padding: 15px 0px 15px;
+    }
 </style>

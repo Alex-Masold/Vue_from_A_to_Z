@@ -5,7 +5,7 @@
     <div v-if="posts.length > 0">
        
         <div>
-            <PostItem 
+            <post-item 
                 v-for="post in posts"
                 :post="post"
                 :key="post.id"
@@ -14,14 +14,17 @@
         </div>
           
     </div>
-    <div
-        v-else
-        class="emptyList">
-        список пуст
+    <div v-else>
+        <div
+            class="emptyList">
+            список пуст
+        </div>
     </div>
+    
 </template>
 
 <script>
+import { VProgressLinear } from 'vuetify/lib/components/index.mjs';
 import PostItem from './PostItem.vue';
 
 export default{
@@ -39,16 +42,6 @@ export default{
 </script>
 
 <style scoped>
- .createButton {
-        align-self: flex-end;
-
-        border: 2px solid teal;
-        margin-top: 15px;
-        padding: 10px 15px;
-
-        background: none;
-        color: teal;
-    }
     .emptyList {
         padding: 0.5em;
         border: 3px solid teal;

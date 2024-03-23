@@ -1,7 +1,6 @@
 <template>
-    <div class="wrap">
-        <custom-input/>
-        <custom-button>создать</custom-button>
+    <div>
+         
     </div>
 </template>
 
@@ -12,8 +11,5 @@
 </script>
 
 <style scoped>
-    .wrap{
-        display: flex;
-        justify-content: space-between;
-    }
+
 </style>
