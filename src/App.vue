@@ -57,7 +57,7 @@ import axios from 'axios'
             createPost(post)
             {
                 // console.log(post);
-                this.posts.push(post);
+                this.posts.push (post);
                 this.dialogVisible = false;
             },
             removePost(post){
