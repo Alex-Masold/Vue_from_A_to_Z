@@ -1,6 +1,10 @@
 <template>
     <div class="post">
         <div>
+            <div    >
+                <strong>Id: </strong>
+                <i>{{ post.id }}</i>
+            </div>
             <div>
                 <strong>Название: </strong>
                 <i>{{ post.title }}</i>

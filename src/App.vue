@@ -2,6 +2,7 @@
     <div class ="app">
         <h2>Страница постов</h2>
         <div class="block">
+            <custom-input v-model="searchQuery" placeholder="Поиск постов"/>
             <custom-button
             @click="showDialog">
                 Создать пост
@@ -15,7 +16,7 @@
             @create="createPost"/>
         </custom-dialog>
         <post-list 
-        :posts="sortedPosts"
+        :posts="sortedAndSearchedPosts"
         v-if="!isPostsLoading"
         @remove="removePost"/>
         <div v-else>
@@ -23,6 +24,15 @@
                 <strong>Список постов</strong>
             </h3>
             <v-progress-linear color="teal" indeterminate></v-progress-linear>
+        </div>
+        <div class="page_wrapper">
+            <div class="page"
+            v-for="pageNumber in totalPages" 
+            :key="pageNumber"
+            :class="{'current_page': page === pageNumber}"
+            @click="ChangePage(pageNumber)">
+                {{ pageNumber }} 
+            </div>
         </div>
     </div>
 </template>
@@ -43,12 +53,17 @@ import axios from 'axios'
                 isPostsLoading: false,
 
                 selectedSort: '',
+                searchQuery: '',
+
+                page: 5,
+                limit: 10,
+                totalPages: 0,
 
                 posts: [],
                 sortOptions:[
                     {value: 'title', name: 'По названию'},
                     {value: 'body', name: 'По описанию'},
-                    {value: 'id', name: 'По id'},
+                    {value: Number, name: 'По id'},
 
                 ]
             }
@@ -67,11 +82,22 @@ import axios from 'axios'
             {
                 this.dialogVisible = true;
             },
+            ChangePage(pageNumber)
+            {
+                this.page = pageNumber;
+                
+            },
             async fetchPosts() 
             {
                 try {
                     this.isPostsLoading = true;
-                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=5')
+                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+                        params:{
+                            _page: this.page,
+                            _limit: this.limit
+                        }
+                    });
+                    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
                     this.posts = response.data;
                 }
                 catch (err) {
@@ -85,14 +111,12 @@ import axios from 'axios'
         mounted(){
             this.fetchPosts();
         }, 
-        // watch:{
-        //     selectedSort(value)
-        //     {
-        //         this.posts.sort((post1, post2) => {
-        //             return post1[value]?.localeCompare(post2[value])
-        //         })
-        //     }
-        // },
+        watch:{
+            page()
+            {
+                this.fetchPosts();
+            }
+        },
         computed:{
             sortedPosts(){
                 if (this.selectedSort === 'id') //как отсортировать по id
@@ -106,6 +130,9 @@ import axios from 'axios'
                     })
                 }
             },   
+            sortedAndSearchedPosts(){
+                return this.sortedPosts.filter(post => post.title.toLowerCase().includes(this.searchQuery.toLowerCase()))
+            }
         }
     }
 </script>
@@ -114,15 +141,34 @@ import axios from 'axios'
     *{
         margin: 0;
         padding: 0;
+        width: 100%;
         box-sizing: border-box;
     }
     .app{
         padding: 20px;
     }
     .block{
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+
+        grid-template-columns: 3fr 1fr 1fr;
+
+        align-items: baseline ;
         gap: 0.5em;
         padding: 15px 0px 15px;
+    }
+    .page_wrapper{
+        display: flex;
+        gap: 0.5em;
+        
+        margin-top: 15px;
+        justify-content: center;
+    }
+    .page{
+        border: 2px solid teal;
+        width: auto;
+        padding: 5px;
+    }
+    .current_page{
+        color: teal;
     }
 </style>

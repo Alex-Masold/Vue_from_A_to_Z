@@ -40,6 +40,5 @@
         background-color:#242424;
         border: 2px solid teal;
         padding: 10px 15px;
-        text-align: center;
     }
 </style>
