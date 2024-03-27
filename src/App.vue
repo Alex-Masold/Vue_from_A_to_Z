@@ -15,25 +15,18 @@
             <post-form
             @create="createPost"/>
         </custom-dialog>
+        <div v-if="!isPostsLoading">
         <post-list 
         :posts="sortedAndSearchedPosts"
-        v-if="!isPostsLoading"
         @remove="removePost"/>
+        </div>
         <div v-else>
             <h3>
                 <strong>Список постов</strong>
             </h3>
             <v-progress-linear color="teal" indeterminate></v-progress-linear>
         </div>
-        <div class="page_wrapper">
-            <div class="page"
-            v-for="pageNumber in totalPages" 
-            :key="pageNumber"
-            :class="{'current_page': page === pageNumber}"
-            @click="ChangePage(pageNumber)">
-                {{ pageNumber }} 
-            </div>
-        </div>
+        <div ref="observer" class="observer"></div>
     </div>
 </template>
 
@@ -55,7 +48,7 @@ import axios from 'axios'
                 selectedSort: '',
                 searchQuery: '',
 
-                page: 5,
+                page: 1,
                 limit: 10,
                 totalPages: 0,
 
@@ -82,15 +75,14 @@ import axios from 'axios'
             {
                 this.dialogVisible = true;
             },
-            ChangePage(pageNumber)
-            {
-                this.page = pageNumber;
-                
-            },
-            async fetchPosts() 
+            async fetchPosts(n) 
             {
                 try {
-                    this.isPostsLoading = true;
+                    this.page += n;
+
+                    if(n === 0){
+                        this.isPostsLoading = true;
+                    }
                     const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
                         params:{
                             _page: this.page,
@@ -98,24 +90,37 @@ import axios from 'axios'
                         }
                     });
                     this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
-                    this.posts = response.data;
+                    this.posts = [...this.posts, ...response.data];
                 }
                 catch (err) {
                     alert('error')
                 }
                 finally{
-                    this.isPostsLoading = false;
+                    if (n === 0){
+                        this.isPostsLoading = false;
+                    }
                 }
             },
         },
         mounted(){
-            this.fetchPosts();
+            this.fetchPosts(0);
+            console.log(this.$refs.observer);
+            const options = {
+                rootMargin: "0px",
+                threshold: 1.0,
+            };
+
+            const callback = (entries, observer) => {
+                if (entries[0].isIntersecting && this.page < this.totalPages){
+                    this.fetchPosts(1)
+                }
+            }
+
+            const observer = new IntersectionObserver(callback, options);
+            observer.observe(this.$refs.observer);
         }, 
         watch:{
-            page()
-            {
-                this.fetchPosts();
-            }
+
         },
         computed:{
             sortedPosts(){
@@ -156,19 +161,8 @@ import axios from 'axios'
         gap: 0.5em;
         padding: 15px 0px 15px;
     }
-    .page_wrapper{
-        display: flex;
-        gap: 0.5em;
-        
-        margin-top: 15px;
-        justify-content: center;
-    }
-    .page{
-        border: 2px solid teal;
-        width: auto;
-        padding: 5px;
-    }
-    .current_page{
-        color: teal;
+    .observer{
+        height: 20px;
+        background: tan;
     }
 </style>
