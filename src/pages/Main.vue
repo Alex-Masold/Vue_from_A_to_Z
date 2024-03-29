@@ -4,7 +4,7 @@
         <h1>Страница постов</h1>
       </header>
       <div class="block">
-          <custom-input v-model="searchQuery" placeholder="Поиск постов"/>
+          <custom-input v-focus v-model="searchQuery" placeholder="Поиск постов"/>
           <custom-button
           @click="showDialog">
               Создать пост
@@ -28,7 +28,7 @@
           </h3>
           <v-progress-linear color="teal" indeterminate></v-progress-linear>
       </div>
-      <footer ref="observer" class="observer">
+      <footer v-intersection="() => fetchPosts(1)" class="observer">
       </footer>
   </div>
 </template>
@@ -108,19 +108,7 @@ import axios from 'axios'
       mounted(){
           this.fetchPosts(0);
           console.log(this.$refs.observer);
-          const options = {
-              rootMargin: "0px",
-              threshold: 1.0,
-          };
-
-          const callback = (entries, observer) => {
-              if (entries[0].isIntersecting && this.page < this.totalPages){
-                  this.fetchPosts(1)
-              }
-          }
-
-          const observer = new IntersectionObserver(callback, options);
-          observer.observe(this.$refs.observer);
+       
       }, 
       watch:{
 
@@ -158,6 +146,7 @@ import axios from 'axios'
   .observer{
       height: 20px;
       background: tan;
+      visibility: hidden;
   }
   .header{
     text-align: center;

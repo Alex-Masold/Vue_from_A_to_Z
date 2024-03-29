@@ -1,8 +1,9 @@
 <template>
     <form class="form" @submit.prevent>
         <h4>Создание Поста</h4>
-        <custom-input        
+        <custom-input      
             v-model="post.title"
+            v-focus
             class="input" 
             type="text" 
             placeholder="Название"
