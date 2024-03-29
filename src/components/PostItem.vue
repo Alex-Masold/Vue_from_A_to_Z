@@ -1,7 +1,7 @@
 <template>
     <div class="post">
         <div>
-            <div    >
+            <div>
                 <strong>Id: </strong>
                 <i>{{ post.id }}</i>
             </div>
@@ -14,7 +14,11 @@
                 {{ post.body }}
             </div>
         </div>
-        <div class="postButtons">
+        <div class="wrapper_button">
+            <custom-button
+            @click="$router.push(`/Post/${post.id}`)">
+            Перейти</custom-button>
+
             <custom-button
             @click="$emit('remove', post)">
             Удалить</custom-button>
@@ -44,5 +48,9 @@
         padding: 0.5em;
         border: 3px solid teal;
         margin-top: 15px;
+    }
+    .wrapper_button{
+        display: flex;
+        gap: 0.5em;
     }
 </style>
