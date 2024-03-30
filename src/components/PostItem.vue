@@ -13,6 +13,10 @@
                 <strong>Описание: </strong>
                 {{ post.body }}
             </div>
+            <div>
+                <strong>Лайки: </strong>
+                {{ $store.state.likes }}
+            </div>
         </div>
         <div class="wrapper_button">
             <custom-button
