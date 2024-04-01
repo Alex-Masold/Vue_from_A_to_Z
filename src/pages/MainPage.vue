@@ -1,36 +1,37 @@
 <template>
-  <div class ="app">
-      <header class="header">
-        <h1>Страница постов</h1>
-      </header>
-      <div class="block">
-          <custom-input v-focus v-model="searchQuery" placeholder="Поиск постов"/>
-          <custom-button
-          @click="showDialog">
-              Создать пост
-          </custom-button>
-          <custom-select 
-          v-model="selectedSort"
-          :options="sortOptions"/>
-      </div>
-      <custom-dialog v-model:show="dialogVisible">
-          <post-form
-          @create="createPost"/>
-      </custom-dialog>
-      <div v-if="!isPostsLoading">
-      <post-list 
-      :posts="sortedAndSearchedPosts"
-      @remove="removePost"/>
-      </div>
-      <div v-else>
-          <h3>
-              <strong>Список постов</strong>
-          </h3>
-          <v-progress-linear color="teal" indeterminate></v-progress-linear>
-      </div>
-      <footer v-intersection="() => fetchPosts(1)" class="observer">
-      </footer>
-  </div>
+    <div class ="app">
+        <header class="header">
+            <h1>Страница постов</h1>
+        </header>
+        <div class="block">
+            <custom-input id="Search" v-focus v-model="searchQuery" placeholder="Поиск постов"/>
+            <custom-button id="Create"
+            @click="showDialog">
+                Создать пост
+            </custom-button>
+
+            <custom-select id="Sort"
+                v-model="selectedSort"
+                :options="sortOptions"/>
+        </div>
+        <custom-dialog v-model:show="dialogVisible">
+            <post-form
+            @create="createPost"/>
+        </custom-dialog>
+        <div v-if="!isPostsLoading">
+        <post-list 
+        :posts="sortedAndSearchedPosts"
+        @remove="removePost"/>
+        </div>
+        <div v-else>
+            <h3>
+                <strong>Список постов</strong>
+            </h3>
+            <v-progress-linear color="teal" indeterminate></v-progress-linear>
+        </div>
+        <footer v-intersection="() => fetchPosts(1)" class="observer">
+        </footer>
+    </div>
 </template>
 
 <script>
@@ -134,21 +135,28 @@ import axios from 'axios'
 </script>
 
 <style scoped>
-  .block{
-      display: grid;
-
-      grid-template-columns: 3fr 1fr 1fr;
+    .block{
+      display: flex;
+      
 
       align-items: baseline ;
       gap: 0.5em;
       padding: 15px 0px 15px;
-  }
-  .observer{
+    }   
+
+    .observer{
       height: 20px;
       background: tan;
       visibility: hidden;
-  }
-  .header{
-    text-align: center;
-  }
+    }
+    .header{
+        text-align: center;
+    }
+    #Search{
+        flex-grow: 1;
+    }
+    #Create{
+    }
+    #Sort{
+    }
 </style>

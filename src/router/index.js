@@ -1,15 +1,20 @@
-import Main from "../pages/Main.vue";
-import PostPage from "../pages/PostPage.vue"
+import LogIn from "../pages/LogInPage.vue";
+import Main from "../pages/MainPage.vue";
+import Post from "../pages/PostPage.vue"
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
     {
         path: '/',
+        component: LogIn,
+    },
+    {
+        path: '/Main',
         component: Main,
     },
     {
         path: '/Post/:id',
-        component: PostPage,
+        component: Post,
     },
 ]
 

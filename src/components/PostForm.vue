@@ -1,18 +1,14 @@
 <template>
-    <form class="form" @submit.prevent>
+    <custom-form @submit.prevent>
         <h4>Создание Поста</h4>
-        <custom-input      
+        <custom-input type="text" 
+            placeholder="Название"
             v-model="post.title"
             v-focus
-            class="input" 
-            type="text" 
-            placeholder="Название"
         />
-        <custom-input 
-            v-model="post.body"
-            class="input" 
-            type="text" 
+        <custom-input type="text" 
             placeholder="Описание"
+            v-model="post.body"
         />
         <custom-button  
             class="createButton"
@@ -20,7 +16,7 @@
             >
             Создать
         </custom-button>
-    </form>
+    </custom-form>
 </template>
 
 <script>
