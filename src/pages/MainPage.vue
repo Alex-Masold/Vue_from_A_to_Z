@@ -2,6 +2,7 @@
     <div class ="app">
         <header class="header">
             <h1>Страница постов</h1>
+            <h2>{{ $store.state.isAuthorized }}</h2>
         </header>
         <div class="block">
             <custom-input id="Search" v-focus v-model="searchQuery" placeholder="Поиск постов"/>
@@ -48,6 +49,7 @@ import axios from 'axios'
           return {
               dialogVisible: false,
               isPostsLoading: false,
+
 
               selectedSort: '',
               searchQuery: '',

@@ -9,7 +9,9 @@ export default createStore({
 
     },
     mutations: {
-
+        setAuth(state) {
+            state.isAuthorized = !state.isAuthorized
+        }
     },
     actions: {
 

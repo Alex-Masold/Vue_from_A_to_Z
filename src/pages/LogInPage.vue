@@ -1,29 +1,33 @@
 <template>
     <div class="wrapper">
         <div class="content">
-            <custom-form>
-                <h4>Авторизация</h4>
-                <custom-input type="text" 
-                    placeholder="Имя пользователя"
-                    v-focus/>
+            <h4>Авторизация</h4>
+            <custom-input type="text"
+                v-model="user.name" 
+                placeholder="Имя пользователя"
+                v-focus/>
 
-                <custom-input type="text" 
+            <custom-input type="text"
+                v-model="user.password" 
                 placeholder="Пароль"
                 v-focus/>
 
-                <custom-button id="login">
-                    Log in
-                </custom-button>
-            </custom-form>
+            <custom-button id="login"
+                @click="CheckLogin">
+                Log in
+            </custom-button>    
         </div>
     </div>
 </template>
 
 <script>
-import { loadConfigFromFile } from 'vite'
 import CustomButton from '../components/UI/CustomButton.vue'
 import CustomForm from '../components/UI/CustomForm.vue'
 import CustomInput from '../components/UI/CustomInput.vue'
+
+import axios from 'axios'
+import router from '../router'
+import store from '../store'
     export default {
 	components: { CustomForm, CustomInput, CustomButton },
         data(){
@@ -34,27 +38,44 @@ import CustomInput from '../components/UI/CustomInput.vue'
                 }, 
 
                 users: [
-                    {name: 'Bret', password: '92998'},
-                    {name: 'Antonette', password: '90566'},
-                    {name: 'Samantha', password: '59590'},
-                    {name: 'Karianne', password: '53919'},
-                    {name: 'Kamren', password: '33263'},
-            ],
+                    // {name: 'Bret', password: '92998'},
+                    // {name: 'Antonette', password: '90566'},
+                    // {name: 'Samantha', password: '59590'},
+                    // {name: 'Karianne', password: '53919'},
+                    // {name: 'Kamren', password: '33263'},
+                ],
             }
         },
         methods:{
             async fetchUSers() 
             {
                 try {
-                    // const response = await axios.get("https://jsonplaceholder.typicode.com/users");
-                    // console.log(response.data);
-              }
+                    const response = await axios.get("https://jsonplaceholder.typicode.com/users");
+                    response.data.forEach(user => this.users.push(
+                        {
+                            name: user.username, 
+                            password: user.address.zipcode.slice(0, 5)
+                        }
+                    ));
+                    console.log(this.users);
+                }
               catch (err) {
                   alert('error')
               }
               finally{
               }
-            }, 
+            },
+            
+            CheckLogin(){
+                this.users.forEach(user => {
+                    if (this.user.name === user.name &&
+                        this.user.password === user.password)
+                        {
+                            store.commit('setAuth');
+                            router.push('/Main')
+                        }
+                })
+            }
         },
         mounted(){
           this.fetchUSers();
@@ -72,6 +93,9 @@ import CustomInput from '../components/UI/CustomInput.vue'
     }
 
     .content {
+        display: flex;
+        flex-direction: column;
+
         margin: auto;
         background-color: #242424;
         border: 2px solid teal;
