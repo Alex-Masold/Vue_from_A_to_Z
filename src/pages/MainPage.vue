@@ -5,19 +5,14 @@
             <h2>{{ $store.state.isAuthorized }}</h2>
         </header>
         <div class="block">
-            <custom-input id="Search" 
-                placeholder="Поиск постов"
-                :model-value="searchQuery"
-                @update:model-value="setSearchQuery"
-                v-focus />
+            <custom-input id="Search" v-focus v-model="searchQuery" placeholder="Поиск постов"/>
             <custom-button id="Create"
             @click="showDialog">
                 Создать пост
             </custom-button>
 
             <custom-select id="Sort"
-                :model-value="selectedSort"
-                @update:model-value="setSelectedSort"
+                v-model="selectedSort"
                 :options="sortOptions"/>
         </div>
         <custom-dialog v-model:show="dialogVisible">
@@ -35,16 +30,17 @@
             </h3>
             <v-progress-linear color="teal" indeterminate></v-progress-linear>
         </div>
-        <footer v-intersection="() => fetchPosts(1)" class="observer">
+        <footer v-intersection="() => fetching(1)" class="observer">
         </footer>
     </div>
 </template>
 
 <script>
+import usePosts from '../hooks/usePosts';
+import useSortedAndSearchedPosts from '../hooks/useSortedAndSearchedPosts';
+import useSortedPosts from '../hooks/useSortedPosts';
 import PostForm from '/src/components/PostForm.vue';
 import PostList from '/src/components/PostList.vue';
-import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
-import axios from 'axios'
 
   export default {
       components:{
@@ -54,17 +50,18 @@ import axios from 'axios'
       data() {
           return {
               dialogVisible: false,
+
+              limit: 10,
+
+              sortOptions:[
+                  {value: 'title', name: 'По названию'},
+                  {value: 'body', name: 'По описанию'},
+                  {value: Number, name: 'По id'},
+
+              ]
           }
       },
       methods: {
-        ...mapMutations({
-            setPage: 'post/setPage',
-            setSearchQuery: 'post/setSearchQuery',
-            setSelectedSort: 'post/setSelectedSort',
-        }),
-        ...mapActions({
-            fetchPosts: 'post/fetchPosts',
-        }),
           createPost(post)
           {
               // console.log(post);
@@ -81,26 +78,25 @@ import axios from 'axios'
           
       },
       mounted(){
-          this.fetchPosts(0);
-      }, 
-      computed:{
-        ...mapState({
-            isPostsLoading: state => state.post.isPostsLoading,
+          console.log(this.$refs.observer);
 
-            selectedSort: state => state.post.selectedSort,
-            searchQuery: state => state.post.searchQuery,
-            
-            page: state => state.post.page,
-            limit: state => state.post.limit,
-            totalPages: state => state.post.totalPages,
+      },
 
-            posts: state => state.post.posts,
-            sortOptions: state => state.post.sortOptions,
-        }),
-        ...mapGetters({
-            sortedPosts: 'post/sortedPosts',
-            sortedAndSearchedPosts: 'post/sortedAndSearchedPosts',
-        })
+      setup(props) {
+        const {posts, isPostsLoading, totalPages, fetching } = usePosts(10);
+        const {selectedSort, sortedPosts} = useSortedPosts(posts);
+        const {searchQuery, sortedAndSearchedPosts} = useSortedAndSearchedPosts(sortedPosts);
+
+        return [
+            posts,
+            isPostsLoading,
+            totalPages,
+            fetching,
+            selectedSort,
+            sortedPosts,
+            searchQuery,
+            sortedAndSearchedPosts
+        ]
       }
   }
 </script>
