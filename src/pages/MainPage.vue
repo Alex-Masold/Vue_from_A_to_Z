@@ -5,14 +5,19 @@
             <h2>{{ $store.state.isAuthorized }}</h2>
         </header>
         <div class="block">
-            <custom-input id="Search" v-focus v-model="searchQuery" placeholder="Поиск постов"/>
+            <custom-input id="Search" 
+                placeholder="Поиск постов"
+                :model-value="searchQuery"
+                @update:model-value="setSearchQuery"
+                v-focus />
             <custom-button id="Create"
             @click="showDialog">
                 Создать пост
             </custom-button>
 
             <custom-select id="Sort"
-                v-model="selectedSort"
+                :model-value="selectedSort"
+                @update:model-value="setSelectedSort"
                 :options="sortOptions"/>
         </div>
         <custom-dialog v-model:show="dialogVisible">
@@ -38,6 +43,7 @@
 <script>
 import PostForm from '/src/components/PostForm.vue';
 import PostList from '/src/components/PostList.vue';
+import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 import axios from 'axios'
 
   export default {
@@ -48,26 +54,17 @@ import axios from 'axios'
       data() {
           return {
               dialogVisible: false,
-              isPostsLoading: false,
-
-
-              selectedSort: '',
-              searchQuery: '',
-
-              page: 1,
-              limit: 10,
-              totalPages: 0,
-
-              posts: [],
-              sortOptions:[
-                  {value: 'title', name: 'По названию'},
-                  {value: 'body', name: 'По описанию'},
-                  {value: Number, name: 'По id'},
-
-              ]
           }
       },
       methods: {
+        ...mapMutations({
+            setPage: 'post/setPage',
+            setSearchQuery: 'post/setSearchQuery',
+            setSelectedSort: 'post/setSelectedSort',
+        }),
+        ...mapActions({
+            fetchPosts: 'post/fetchPosts',
+        }),
           createPost(post)
           {
               // console.log(post);
@@ -81,57 +78,29 @@ import axios from 'axios'
           {
               this.dialogVisible = true;
           },
-          async fetchPosts(n) 
-          {
-              try {
-                  this.page += n;
-
-                  if(n === 0){
-                      this.isPostsLoading = true;
-                  }
-                  const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-                      params:{
-                          _page: this.page,
-                          _limit: this.limit
-                      }
-                  });
-                  this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
-                  this.posts = [...this.posts, ...response.data];
-              }
-              catch (err) {
-                  alert('error')
-              }
-              finally{
-                  if (n === 0){
-                      this.isPostsLoading = false;
-                  }
-              }
-          },
+          
       },
       mounted(){
           this.fetchPosts(0);
-          console.log(this.$refs.observer);
-       
       }, 
-      watch:{
-
-      },
       computed:{
-          sortedPosts(){
-              if (this.selectedSort === 'id') //как отсортировать по id
-              {
-                  
-              }
-              else
-              {
-                  return[...this.posts].sort((post1, post2) => {
-                  return post1[this.selectedSort]?.localeCompare(post2[this.selectedSort])
-                  })
-              }
-          },   
-          sortedAndSearchedPosts(){
-              return this.sortedPosts.filter(post => post.title.toLowerCase().includes(this.searchQuery.toLowerCase()))
-          }
+        ...mapState({
+            isPostsLoading: state => state.post.isPostsLoading,
+
+            selectedSort: state => state.post.selectedSort,
+            searchQuery: state => state.post.searchQuery,
+            
+            page: state => state.post.page,
+            limit: state => state.post.limit,
+            totalPages: state => state.post.totalPages,
+
+            posts: state => state.post.posts,
+            sortOptions: state => state.post.sortOptions,
+        }),
+        ...mapGetters({
+            sortedPosts: 'post/sortedPosts',
+            sortedAndSearchedPosts: 'post/sortedAndSearchedPosts',
+        })
       }
   }
 </script>
