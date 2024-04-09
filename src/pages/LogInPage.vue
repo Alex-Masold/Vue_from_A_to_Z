@@ -70,10 +70,10 @@ import store from '../store'
                 this.users.forEach(user => {
                     if (this.user.name === user.name &&
                         this.user.password === user.password)
-                        {
-                            store.commit('setAuth');
-                            router.push('/Main')
-                        }
+                    {
+                        store.commit('setAuth');
+                        router.push('/Main')
+                    }
                 })
             }
         },
